@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "circulaID",
-    "slug": "circulaID",
+    "name": "",
+    "slug": "CirculaID",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,9 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.circulaid"
     },
     "android": {
+      "package": "com.yourcompany.circulaid",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
