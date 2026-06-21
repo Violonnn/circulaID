@@ -4,7 +4,8 @@ import { StyleSheet } from "react-native";
     container: {
         flex:1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
     },
     titleContainer:{
         width: '90%',

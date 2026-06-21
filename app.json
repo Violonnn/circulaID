@@ -40,6 +40,26 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow CirculaID to access your photos so you can upload proof of work.",
+          "cameraPermission": "Allow CirculaID to use the camera to take proof-of-work photos."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow CirculaID to use your location to auto-fill your worker profile address."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow CirculaID to use the camera to scan job start/finish QR codes."
+        }
       ]
     ],
     "experiments": {
