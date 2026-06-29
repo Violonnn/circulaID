@@ -9,6 +9,7 @@ import PlaceholderImage from '../../../components/PlaceholderImage';
 import ReviewsList from '../../../components/ReviewsList';
 import { formatPeso } from '../../../lib/format';
 import { HIRE_STATUS, type HireStatus } from '../../../lib/constants';
+import { generateReviewSummary } from '../../../lib/generateReviewSummary';
 import { getActiveStatusForWorkerPost } from '../../../lib/hireRequests';
 import { fetchReviews, type Review } from '../../../lib/ratings';
 import { supabase } from '../../../lib/supabase';
@@ -33,6 +34,10 @@ export default function WorkerPostDetail() {
   const [existingStatus, setExistingStatus] = useState<HireStatus | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
+  // AI summary of this worker's reviews (cached server-side). Null = nothing to
+  // show; summaryLoading drives the skeleton while it is being fetched.
+  const [reviewSummary, setReviewSummary] = useState<string | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
   const [workerProfile, setWorkerProfile] = useState<PublicWorkerProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,14 +65,33 @@ export default function WorkerPostDetail() {
     // Load the worker's public profile (bio + rating) and reviews (tied to the
     // worker, across all their posts) so a client can judge them before hiring.
     if (result.post) {
+      const workerId = result.post.worker_id;
       const [profile, workerReviews] = await Promise.all([
-        getPublicWorkerProfile(result.post.worker_id),
-        fetchReviews(result.post.worker_id),
+        getPublicWorkerProfile(workerId),
+        fetchReviews(workerId),
       ]);
       setWorkerProfile(profile);
       setReviews(workerReviews);
+      setReviewsLoading(false);
+
+      // AI review summary: only worth fetching when there are at least 2 reviews
+      // with actual text. The Edge Function returns a cached summary if one was
+      // generated in the last 7 days, otherwise it regenerates + caches it.
+      // Guard: no worker id or too few text reviews -> show nothing, skip the call.
+      const textReviewCount = workerReviews.filter((r) => (r.comment ?? '').trim().length > 0)
+        .length;
+      if (workerId && textReviewCount >= 2) {
+        setSummaryLoading(true);
+        const summary = await generateReviewSummary(workerId, workerReviews);
+        setReviewSummary(summary);
+        setSummaryLoading(false);
+      } else {
+        setReviewSummary(null);
+        setSummaryLoading(false);
+      }
+    } else {
+      setReviewsLoading(false);
     }
-    setReviewsLoading(false);
   }, [id]);
 
   // Reload on focus so slot counts / request state refresh after returning from
@@ -170,6 +194,37 @@ export default function WorkerPostDetail() {
               ) : null}
             </Card.Content>
           </Card>
+        ) : null}
+
+        {/* AI summary of this worker's reviews, sat between the About card and the
+            reviews list. Renders a skeleton line while loading and nothing at all
+            when there is no summary (too few reviews or any failure). */}
+        {summaryLoading && !reviewSummary ? (
+          <View style={styles.aiSummary}>
+            <View style={styles.aiSummaryHeader}>
+              <Text variant="bodySmall" style={styles.aiSummaryLabel}>
+                AI Review Summary
+              </Text>
+              <View style={styles.aiBadge}>
+                <Text style={styles.aiBadgeText}>AI Generated</Text>
+              </View>
+            </View>
+            <View style={styles.aiSkeletonLine} />
+          </View>
+        ) : reviewSummary ? (
+          <View style={styles.aiSummary}>
+            <View style={styles.aiSummaryHeader}>
+              <Text variant="bodySmall" style={styles.aiSummaryLabel}>
+                AI Review Summary
+              </Text>
+              <View style={styles.aiBadge}>
+                <Text style={styles.aiBadgeText}>AI Generated</Text>
+              </View>
+            </View>
+            <Text variant="bodyMedium" style={styles.aiSummaryText}>
+              {reviewSummary}
+            </Text>
+          </View>
         ) : null}
 
         {/* Reviews (Part 4): read-only list of this worker's past ratings, so a
@@ -285,6 +340,35 @@ const styles = StyleSheet.create({
   reviews: { marginTop: spacing.xl },
   reviewsHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   reviewsTitle: { fontFamily: fonts.displaySemi, color: colors.text },
+  // AI review summary block (above the reviews list).
+  aiSummary: { marginTop: spacing.xl, gap: spacing.sm },
+  aiSummaryHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  aiSummaryLabel: {
+    color: colors.textMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    fontFamily: fonts.bodyMedium,
+  },
+  aiBadge: {
+    backgroundColor: colors.surfaceMuted,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: radius.pill,
+  },
+  aiBadgeText: {
+    color: colors.textMuted,
+    fontSize: 10,
+    fontFamily: fonts.bodyMedium,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
+  },
+  aiSummaryText: { color: colors.text },
+  aiSkeletonLine: {
+    height: 14,
+    borderRadius: radius.sm,
+    backgroundColor: colors.surfaceMuted,
+    alignSelf: 'stretch',
+  },
   row: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md, marginBottom: spacing.md + 2 },
   rowIcon: { marginTop: 4 },
   rowBody: { flex: 1 },
