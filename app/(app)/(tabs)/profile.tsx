@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
+import { CommonActions } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import {
@@ -14,6 +15,7 @@ import {
 } from 'react-native-paper';
 import Dropdown from '../../../components/Dropdown';
 import PlaceholderImage from '../../../components/PlaceholderImage';
+import RoleSwitcher from '../../../components/RoleSwitcher';
 import SuspendedBanner from '../../../components/SuspendedBanner';
 import KeyboardAvoider from '../../../components/ui/KeyboardAvoider';
 import ScreenTitle from '../../../components/ui/ScreenTitle';
@@ -27,7 +29,7 @@ import {
   toBirthDateString,
   YEAR_OPTIONS,
 } from '../../../lib/birthdate';
-import { ACTIVE_ROLE } from '../../../lib/constants';
+import { ACTIVE_ROLE, type ActiveRole } from '../../../lib/constants';
 import { formatPeso, toTitleCase } from '../../../lib/format';
 import { getWalletBalance } from '../../../lib/payments';
 import { useRole } from '../../../lib/role-context';
@@ -43,8 +45,20 @@ const NAME_EDIT_COOLDOWN_DAYS = 7;
 // into inputs rather than opening a modal.
 export default function ProfileTab() {
   const router = useRouter();
+  const navigation = useNavigation();
   const { profile, refreshProfile } = useAuth();
-  const { activeRole, workerProfile, isWorkerSuspended, refreshWorkerProfile } = useRole();
+  const {
+    activeRole,
+    setActiveRole,
+    hasActiveWorkerProfile,
+    workerProfile,
+    isWorkerSuspended,
+    refreshWorkerProfile,
+  } = useRole();
+
+  // The role the user has TAPPED but not yet confirmed (drives the modal). Null
+  // means no switch is pending and the confirmation modal is closed.
+  const [pendingRole, setPendingRole] = useState<ActiveRole | null>(null);
 
   const [balance, setBalance] = useState<number | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -226,6 +240,39 @@ export default function ProfileTab() {
     }
   }
 
+  // ---- Role switch (confirmed via modal, then resets the stack) --------------
+  function confirmRoleSwitch() {
+    // Guard: nothing pending -> nothing to do.
+    if (!pendingRole) return;
+    const target = pendingRole;
+    setPendingRole(null);
+
+    // Switch the UI context first so the feed tab renders the right view.
+    setActiveRole(target);
+
+    // Clear screen-level local state so nothing from this screen carries over
+    // into the new role's view.
+    setEditingDetails(false);
+    setEditingWorker(false);
+    setDeleteOpen(false);
+    setConfirmText('');
+    setDetailsError('');
+    setWorkerError('');
+    setDeleteError('');
+
+    // Reset the stack so there is no back path into the previous role's screens.
+    // Both roles land on the same `feed` route: it renders the Feed for clients
+    // and the Job screen for workers (see feed.tsx). We reset the parent (app)
+    // Stack down to a fresh tab shell focused on that route.
+    const rootNav = navigation.getParent() ?? navigation;
+    rootNav.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: '(tabs)', params: { screen: 'feed' } }],
+      })
+    );
+  }
+
   return (
     <View style={styles.screen}>
       <ScreenTitle title="Profile" />
@@ -344,6 +391,23 @@ export default function ProfileTab() {
               </Card.Actions>
             ) : null}
           </Card>
+
+          {/* Mode: the client/worker toggle. Only active workers see this (the
+              switcher renders nothing otherwise). Tapping the other side opens a
+              confirmation modal before the switch actually happens. */}
+          {hasActiveWorkerProfile ? (
+            <Card style={styles.card}>
+              <Card.Title title="Mode" titleStyle={styles.cardTitle} />
+              <Card.Content>
+                <Text variant="bodySmall" style={styles.note}>
+                  Switch between using CirculaID as a client or as a worker.
+                </Text>
+                <View style={styles.modeSwitch}>
+                  <RoleSwitcher onRequestChange={(next) => setPendingRole(next)} />
+                </View>
+              </Card.Content>
+            </Card>
+          ) : null}
 
           {/* Wallet — worker view only (the worker's earnings space). */}
           {isWorkerView ? (
@@ -492,6 +556,26 @@ export default function ProfileTab() {
           ) : null}
 
           <Portal>
+            {/* Role-switch confirmation. Icon differs by destination: a briefcase
+                for the worker side, a person for the client side. Cancel does
+                nothing; Confirm switches the role and resets the stack. */}
+            <Dialog visible={pendingRole !== null} onDismiss={() => setPendingRole(null)}>
+              <Dialog.Icon
+                icon={pendingRole === ACTIVE_ROLE.WORKER ? 'briefcase' : 'account'}
+              />
+              <Dialog.Content>
+                <Text variant="bodyLarge" style={styles.switchText}>
+                  Switching to {pendingRole === ACTIVE_ROLE.WORKER ? 'Worker' : 'Client'} mode
+                </Text>
+              </Dialog.Content>
+              <Dialog.Actions style={styles.switchActions}>
+                <Button onPress={() => setPendingRole(null)}>Cancel</Button>
+                <Button mode="contained" onPress={confirmRoleSwitch}>
+                  Confirm
+                </Button>
+              </Dialog.Actions>
+            </Dialog>
+
             <Dialog visible={deleteOpen} onDismiss={() => !deleting && setDeleteOpen(false)}>
               <Dialog.Title>Delete account?</Dialog.Title>
               <Dialog.Content>
@@ -592,6 +676,9 @@ const styles = StyleSheet.create({
   fieldLabel: { color: colors.textMuted, marginBottom: 2 },
   balance: { fontFamily: fonts.display, color: colors.success },
   note: { color: colors.textMuted, marginTop: spacing.xs },
+  modeSwitch: { marginTop: spacing.md, alignItems: 'center' },
+  switchText: { textAlign: 'center', color: colors.text },
+  switchActions: { justifyContent: 'center', gap: spacing.sm },
   // Inline editor bits.
   editor: { gap: spacing.xs },
   input: { backgroundColor: colors.surface },

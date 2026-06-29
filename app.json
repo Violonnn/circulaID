@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.circulaid"
+      "bundleIdentifier": "com.yourcompany.circulaid" 
     },
     "android": {
       "package": "com.yourcompany.circulaid",

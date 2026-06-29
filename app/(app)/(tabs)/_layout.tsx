@@ -3,7 +3,6 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import BrandHeaderTitle from '../../../components/ui/BrandHeaderTitle';
 import FloatingTabBar from '../../../components/ui/FloatingTabBar';
-import RoleSwitcher from '../../../components/RoleSwitcher';
 import { ACTIVE_ROLE } from '../../../lib/constants';
 import { useRole } from '../../../lib/role-context';
 import { colors } from '../../../lib/theme';
@@ -12,8 +11,8 @@ import { colors } from '../../../lib/theme';
 // are the SAME for clients and workers — only the CONTENT of Feed and Hires
 // changes based on the active role, which each screen reads from RoleContext.
 //
-// The client/worker switcher lives in the header (headerRight). It only renders
-// for active workers; everyone else sees no toggle (see RoleSwitcher).
+// The client/worker switcher lives in the Settings (Profile) screen — see
+// RoleSwitcher rendered there. It only shows for active workers.
 //
 // Visual only: a custom detached/floating tab bar (FloatingTabBar) renders the
 // soft purple "bubble" that springs between tabs; the header shows the
@@ -35,7 +34,6 @@ export default function TabsLayout() {
         headerTitleAlign: 'left',
         headerShadowVisible: false,
         headerStyle: { backgroundColor: colors.background },
-        headerRight: () => <RoleSwitcher />,
       }}
     >
       <Tabs.Screen

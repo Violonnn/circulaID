@@ -44,6 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
       setSession(next);
     });
+
     return () => sub.subscription.unsubscribe();
   }, []);
 
@@ -52,6 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let active = true;
 
     async function loadProfile() {
+      
       // Guard: no session means nothing to load and no profile to miss.
       if (!session) {
         setProfile(null);
@@ -59,7 +61,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       const next = await getCurrentUser();
+
       if (!active) return;
+
       setProfile(next);
       setProfileMissing(next === null);
     }

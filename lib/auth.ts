@@ -77,7 +77,7 @@ export async function resendConfirmation(email: string) {
   return { error };
 }
 
-// Log in an existing account (regular user or admin — same screen for both).
+// Log in an existing account (regular user — same screen for both).
 export async function signIn(email: string, password: string) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   return { error };

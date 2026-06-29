@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { HIRE_STATUS, PAGE_SIZE } from './constants';
+import { ACTIVE_ROLE, HIRE_STATUS, PAGE_SIZE, type ActiveRole } from './constants';
 import { clientNamesForWorker } from './hireRequests';
 import { toTitleCase } from './format';
 
@@ -53,7 +53,12 @@ type ThreadRow = {
 // hires that are accepted or later. We use an inner join so we can filter on the
 // hire status, and derive the "other person" name from the safe public_profiles
 // view.
+//
+// Scoped to the active role: in CLIENT view we only return hires where the user
+// is the client; in WORKER view only those where the user is the worker. The
+// scope is applied as an .eq() at the query level (not by filtering in JS).
 export async function getChatThreads(
+  activeRole: ActiveRole,
   page = 0,
   pageSize = PAGE_SIZE
 ): Promise<{
@@ -68,13 +73,22 @@ export async function getChatThreads(
   const from = page * pageSize;
   const to = from + pageSize - 1;
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('chat_threads')
     .select(
       'id, hire_request_id, created_at, hire_requests!inner(status, client_id, worker_id, post_title)'
     )
     .eq('archived', false)
-    .in('hire_requests.status', CHAT_VISIBLE_STATUSES)
+    .in('hire_requests.status', CHAT_VISIBLE_STATUSES);
+
+  // Role-scoped filter, applied to the joined hire_requests row.
+  if (activeRole === ACTIVE_ROLE.WORKER) {
+    query = query.eq('hire_requests.worker_id', currentUserId);
+  } else {
+    query = query.eq('hire_requests.client_id', currentUserId);
+  }
+
+  const { data, error } = await query
     .order('created_at', { ascending: false })
     .range(from, to);
 

@@ -196,7 +196,9 @@ export default function ChatThread() {
             if (item.kind === 'system') {
               return (
                 <View style={styles.systemWrap}>
-                  <Text style={styles.systemText}>{item.content}</Text>
+                  <Text style={styles.systemText}>
+                    {systemMessageText(item.content, item.sender_id, currentUserId)}
+                  </Text>
                 </View>
               );
             }
@@ -273,6 +275,23 @@ export default function ChatThread() {
       />
     </SafeAreaView>
   );
+}
+
+// System notes are author-agnostic in the database (e.g. "Worker proposed ₱500
+// for this job."). When the viewer IS the author of a price proposal, show it in
+// the first person ("You proposed …") instead. Display-only: uses the sender_id
+// already on the message and the currentUserId already in scope.
+function systemMessageText(
+  content: string,
+  senderId: string,
+  currentUserId: string | null
+): string {
+  // Guard: without a known viewer we can't personalize — show the original.
+  if (!currentUserId) return content;
+  if (senderId === currentUserId && content.startsWith('Worker proposed ')) {
+    return `You${content.slice('Worker'.length)}`;
+  }
+  return content;
 }
 
 // Local, lib-free time formatter (e.g. "3:07 PM"). Falls back to empty on a bad

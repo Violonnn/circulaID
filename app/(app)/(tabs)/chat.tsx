@@ -7,6 +7,8 @@ import SuspendedBanner from '../../../components/SuspendedBanner';
 import ScreenTitle from '../../../components/ui/ScreenTitle';
 import { getChatThreads, type ChatThread } from '../../../lib/chat';
 import { PAGE_SIZE } from '../../../lib/constants';
+import { useAuth } from '../../../lib/auth-context';
+import { useRole } from '../../../lib/role-context';
 import { supabase } from '../../../lib/supabase';
 import { colors, spacing } from '../../../lib/theme';
 
@@ -16,6 +18,9 @@ import { colors, spacing } from '../../../lib/theme';
 // user belongs to.
 export default function ChatTab() {
   const router = useRouter();
+  const { session } = useAuth();
+  const { activeRole } = useRole();
+  const currentUserId = session?.user?.id ?? null;
   const [threads, setThreads] = useState<ChatThread[]>([]);
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -24,18 +29,29 @@ export default function ChatTab() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch one page. 'replace' resets the list; 'append' adds the next page.
-  const fetchPage = useCallback(async (pageToLoad: number, mode: 'replace' | 'append') => {
-    const result = await getChatThreads(pageToLoad, PAGE_SIZE);
-    setError(result.error);
-    setHasMore(result.hasMore);
-    setPage(pageToLoad);
-    setThreads((prev) => {
-      const next = mode === 'append' ? [...prev, ...result.threads] : result.threads;
-      const seen = new Set<string>();
-      return next.filter((t) => (seen.has(t.id) ? false : seen.add(t.id)));
-    });
-  }, []);
+  // Fetch one page. 'replace' resets the list; 'append' adds the next page. The
+  // list is scoped to the active role (client vs worker), filtered at the query.
+  const fetchPage = useCallback(
+    async (pageToLoad: number, mode: 'replace' | 'append') => {
+      // Guard: no signed-in user -> don't run the query, just show the empty state.
+      if (!currentUserId) {
+        setThreads([]);
+        setHasMore(false);
+        setError(null);
+        return;
+      }
+      const result = await getChatThreads(activeRole, pageToLoad, PAGE_SIZE);
+      setError(result.error);
+      setHasMore(result.hasMore);
+      setPage(pageToLoad);
+      setThreads((prev) => {
+        const next = mode === 'append' ? [...prev, ...result.threads] : result.threads;
+        const seen = new Set<string>();
+        return next.filter((t) => (seen.has(t.id) ? false : seen.add(t.id)));
+      });
+    },
+    [activeRole, currentUserId]
+  );
 
   const load = useCallback(async () => {
     setLoading(true);
