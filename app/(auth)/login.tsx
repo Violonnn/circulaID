@@ -42,7 +42,7 @@ export default function Login() {
         accessibilityLabel="CirculaID logo"
       />
       <Text style={styles.title}>Welcome back!</Text>
-      <Text style={styles.subtitle}>Log in to explore clients or workers</Text>
+      <Text style={styles.subtitle}>Log in to explore clients or service providers</Text>
 
       <TextInput
         label="Email Address"

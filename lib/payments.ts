@@ -182,7 +182,7 @@ export async function completeHire(
   if (!qr || qr.state !== QR_STATE.OPEN || qr.stage !== QR_STAGE.COMPLETION_PENDING) {
     return {
       success: false,
-      message: 'The worker has not submitted proof of work yet.',
+      message: 'The service provider has not submitted proof of work yet.',
     };
   }
 
@@ -201,5 +201,5 @@ export async function completeHire(
   if (rpcError) {
     return { success: false, message: 'Could not confirm completion. Please try again.' };
   }
-  return { success: true, message: 'Job completed. Funds released to the worker.' };
+  return { success: true, message: 'Job completed. Funds released to the service provider.' };
 }

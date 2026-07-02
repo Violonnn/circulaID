@@ -52,7 +52,7 @@ export default function PinnedJobPanel({ context }: { context: HireContext | nul
               client can reach each other about this job. */}
           <Row
             icon="briefcase-outline"
-            text={`Worker: ${contactLine(context.worker_name, context.worker_phone)}`}
+            text={`Service Provider: ${contactLine(context.worker_name, context.worker_phone)}`}
           />
           <Row
             icon="person-outline"

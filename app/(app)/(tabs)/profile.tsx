@@ -400,7 +400,7 @@ export default function ProfileTab() {
               <Card.Title title="Mode" titleStyle={styles.cardTitle} />
               <Card.Content>
                 <Text variant="bodySmall" style={styles.note}>
-                  Switch between using CirculaID as a client or as a worker.
+                  Switch between using CirculaID as a client or as a service provider.
                 </Text>
                 <View style={styles.modeSwitch}>
                   <RoleSwitcher onRequestChange={(next) => setPendingRole(next)} />
@@ -432,7 +432,7 @@ export default function ProfileTab() {
           {isWorkerView && workerProfile ? (
             <Card style={styles.card}>
               <Card.Title
-                title="Worker Profile"
+                title="Service Provider Profile"
                 titleStyle={styles.cardTitle}
                 left={() => <Ionicons name="briefcase-outline" size={22} color={colors.primary} />}
               />
@@ -497,16 +497,16 @@ export default function ProfileTab() {
           {/* Client view with no worker profile yet → invite them to become one. */}
           {!isWorkerView && !workerProfile ? (
             <Card style={styles.card}>
-              <Card.Title title="Become a Worker" titleStyle={styles.cardTitle} />
+              <Card.Title title="Become a Service Provider" titleStyle={styles.cardTitle} />
               <Card.Content>
                 <Text variant="bodyMedium">
-                  Activate a worker profile to start posting jobs and getting hired
+                  Activate a service provider profile to start posting jobs and getting hired
                   from this same account.
                 </Text>
               </Card.Content>
               <Card.Actions>
                 <Button mode="contained" onPress={() => router.push('/worker-intent')}>
-                  Set up worker profile
+                  Set up service provider profile
                 </Button>
               </Card.Actions>
             </Card>
@@ -565,7 +565,7 @@ export default function ProfileTab() {
               />
               <Dialog.Content>
                 <Text variant="bodyLarge" style={styles.switchText}>
-                  Switching to {pendingRole === ACTIVE_ROLE.WORKER ? 'Worker' : 'Client'} mode
+                  Switching to {pendingRole === ACTIVE_ROLE.WORKER ? 'Service Provider' : 'Client'} mode
                 </Text>
               </Dialog.Content>
               <Dialog.Actions style={styles.switchActions}>

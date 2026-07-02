@@ -369,7 +369,7 @@ export async function saveSkillPost(
   if (error) {
     return {
       success: false,
-      message: 'Could not create the post. Your worker account may be inactive.',
+      message: 'Could not create the post. Your service provider account may be inactive.',
     };
   }
   return { success: true, message: 'Post created.' };

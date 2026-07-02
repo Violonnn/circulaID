@@ -66,7 +66,7 @@ export default function RatingScreen() {
   if (loading) {
     return (
       <SafeAreaView style={[styles.safe, styles.center]} edges={['bottom']}>
-        <Stack.Screen options={{ title: 'Rate worker' }} />
+        <Stack.Screen options={{ title: 'Rate service provider' }} />
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
@@ -74,7 +74,7 @@ export default function RatingScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <Stack.Screen options={{ title: 'Rate worker' }} />
+      <Stack.Screen options={{ title: 'Rate service provider' }} />
       <View style={styles.content}>
         <Text variant="headlineSmall" style={styles.title}>
           {alreadyRated ? 'Already rated' : 'How did it go?'}
@@ -87,7 +87,7 @@ export default function RatingScreen() {
         ) : (
           <>
             <Text variant="bodyMedium" style={styles.subtitle}>
-              Rate the worker so other clients know what to expect.
+              Rate the service provider so other clients know what to expect.
             </Text>
 
             <View style={styles.stars}>

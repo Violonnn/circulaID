@@ -21,7 +21,7 @@ export async function saveWorkerProfile(
   const { data: auth } = await supabase.auth.getUser();
   // Guard: must be signed in to attach a worker profile.
   if (!auth.user) {
-    return { success: false, message: 'You must be signed in to set up a worker profile.' };
+    return { success: false, message: 'You must be signed in to set up a service provider profile.' };
   }
   // Guard: a bio is required before we save (the form also checks length).
   if (!input.bio.trim()) {
@@ -45,7 +45,7 @@ export async function saveWorkerProfile(
 
   // Guard: report failures in plain language instead of a raw Postgres error.
   if (error) {
-    return { success: false, message: 'Could not save your worker profile. Please try again.' };
+    return { success: false, message: 'Could not save your service provider profile. Please try again.' };
   }
-  return { success: true, message: 'Worker profile created.' };
+  return { success: true, message: 'Service provider profile created.' };
 }

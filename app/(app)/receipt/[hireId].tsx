@@ -87,7 +87,7 @@ export default function ReceiptScreen() {
 
           <Row label="Receipt No." value={receipt.id} />
           <Row label="Job" value={receipt.postTitle ?? '—'} />
-          <Row label="Worker" value={receipt.workerName} />
+          <Row label="Service Provider" value={receipt.workerName} />
           <Row label="Client" value={receipt.clientName} />
           <Row label="Amount" value={`${formatPeso(receipt.amount)} (simulated)`} />
           <Row label="Started" value={formatDateTime(receipt.startedAt) || '—'} />
@@ -141,7 +141,7 @@ function buildHtml(r: ReceiptView): string {
   const rows =
     htmlRow('Receipt No.', r.id) +
     htmlRow('Job', r.postTitle ?? '—') +
-    htmlRow('Worker', r.workerName) +
+    htmlRow('Service Provider', r.workerName) +
     htmlRow('Client', r.clientName) +
     htmlRow('Amount', `${formatPeso(r.amount)} (simulated)`) +
     htmlRow('Started', formatDateTime(r.startedAt) || '—') +

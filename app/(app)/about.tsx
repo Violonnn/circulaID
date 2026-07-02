@@ -18,7 +18,7 @@ export default function About() {
       <View style={styles.center}>
         <BrandHeaderTitle />
         <Text variant="bodyLarge" style={styles.body}>
-          CirculaID connects people who need a hand with trusted local workers.
+          CirculaID connects people who need a hand with trusted local service providers.
         </Text>
         <Text variant="bodyMedium" style={styles.version}>
           Version {APP_VERSION}

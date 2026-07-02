@@ -13,9 +13,9 @@ export default function WorkerIntent() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <Stack.Screen options={{ title: 'Become a Worker' }} />
+      <Stack.Screen options={{ title: 'Become a Service Provider' }} />
       <View style={styles.content}>
-        <Text style={styles.title}>Set up your worker profile?</Text>
+        <Text style={styles.title}>Set up your service provider profile?</Text>
         <Text style={styles.body}>
           You&apos;ll be able to post jobs and get hired from this same account.
         </Text>

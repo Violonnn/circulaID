@@ -53,7 +53,7 @@ export async function submitProofOfWork(
   }
   // Guard: only the assigned worker may submit proof.
   if (hire.worker_id !== auth.user.id) {
-    return { success: false, message: 'Only the assigned worker can submit proof.' };
+    return { success: false, message: 'Only the assigned service provider can submit proof.' };
   }
   // Guard: the job must be in progress.
   if (hire.status !== HIRE_STATUS.IN_PROGRESS) {

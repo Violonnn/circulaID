@@ -102,12 +102,12 @@ Deno.serve(async (req: Request) => {
 
   // The worker's name personalizes the summary; fall back if it's missing.
   const workerName = typeof row.worker_name === 'string' ? row.worker_name.trim() : '';
-  const subject = workerName.length > 0 ? workerName : 'this worker';
+  const subject = workerName.length > 0 ? workerName : 'this service provider';
 
   const joined = texts.join('\n');
   const prompt =
-    `You are summarizing reviews for a specific worker named ${subject} on a freelance hiring app.\n` +
-    `Summarize all these reviews in 2 sentences, referring to the worker by name (${subject}).\n` +
+    `You are summarizing reviews for a specific service provider named ${subject} on a freelance hiring app.\n` +
+    `Summarize all these reviews in 2 sentences, referring to the service provider by name (${subject}).\n` +
     'Mention specific strengths and any concerns if present.\n' +
     'Write in third person. Be factual and neutral.\n\n' +
     'Reviews:\n' +

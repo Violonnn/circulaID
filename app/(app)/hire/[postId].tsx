@@ -100,7 +100,7 @@ export default function HireRequestForm() {
           Request sent
         </Text>
         <Text variant="bodyMedium" style={styles.sentBody}>
-          Waiting for the worker to respond. You&apos;ll get a chat for this job once
+          Waiting for the service provider to respond. You&apos;ll get a chat for this job once
           they accept.
         </Text>
         <Button
@@ -139,7 +139,7 @@ export default function HireRequestForm() {
           }
         />
         <HelperText type="info" visible>
-          This will be the work site — the worker will travel here.
+          This will be the work site — the service provider will travel here.
         </HelperText>
         {/* Work-site confirmation (static info, not an input). */}
         <View style={styles.infoBox}>
@@ -178,7 +178,7 @@ export default function HireRequestForm() {
           multiline
           numberOfLines={4}
           maxLength={DETAILS_LIMIT}
-          placeholder="Anything the worker should know about the job."
+          placeholder="Anything the service provider should know about the job."
           style={styles.input}
           outlineStyle={styles.inputOutline}
         />

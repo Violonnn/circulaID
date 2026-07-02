@@ -52,7 +52,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Allow CirculaID to use your location to auto-fill your worker profile address."
+          "locationWhenInUsePermission": "Allow CirculaID to use your location to auto-fill your service provider profile address."
         }
       ],
       [

@@ -83,15 +83,15 @@ Deno.serve(async (req: Request) => {
 
   const prompt =
     'You write short marketplace listing copy for an informal-work app. From the ' +
-    'worker info below, produce a feed card with exactly two fields:\n' +
+    'service provider info below, produce a feed card with exactly two fields:\n' +
     '- "title": a punchy skill title of 3 to 5 words (e.g. "Reliable House Cleaning Service"). No quotes.\n' +
     '- "shortDescription": one friendly sentence under 25 words summarizing the offer.\n' +
-    'The worker may write in Tagalog, Cebuano/Bisaya, Taglish or English; always write ' +
+    'The service provider may write in Tagalog, Cebuano/Bisaya, Taglish or English; always write ' +
     'BOTH fields in natural English by translating the meaning (never transliterate or keep the original language).\n' +
     'Keep it natural and not corporate-sounding. Respond with JSON only.\n\n' +
     `Skill description: ${description}\n` +
     `Experience: ${experienceLength || 'not specified'}\n` +
-    `Worker bio: ${bio || 'not specified'}\n` +
+    `Service provider bio: ${bio || 'not specified'}\n` +
     `Location: ${location || 'not specified'}`;
 
   // Call Gemini. Any failure here is returned as a non-2xx so the app falls back

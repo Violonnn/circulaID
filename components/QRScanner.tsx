@@ -64,7 +64,7 @@ export default function QRScanner({ visible, title, onScanned, onClose }: Props)
               onBarcodeScanned={handleBarcode}
             />
             <View style={styles.reticle} pointerEvents="none" />
-            <Text style={styles.hint}>Point the camera at the worker&apos;s code</Text>
+            <Text style={styles.hint}>Point the camera at the service provider&apos;s code</Text>
           </View>
         )}
       </SafeAreaView>

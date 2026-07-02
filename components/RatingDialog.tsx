@@ -31,7 +31,7 @@ export default function RatingDialog({ visible, submitting, onDismiss, onSubmit 
   return (
     <Portal>
       <Dialog visible={visible} onDismiss={onDismiss}>
-        <Dialog.Title>Rate this worker</Dialog.Title>
+        <Dialog.Title>Rate this service provider</Dialog.Title>
         <Dialog.Content>
           <View style={styles.stars}>
             {[1, 2, 3, 4, 5].map((value) => (

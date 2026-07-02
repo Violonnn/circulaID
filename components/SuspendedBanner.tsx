@@ -17,7 +17,7 @@ export default function SuspendedBanner() {
   return (
     <Banner visible icon="alert-circle" style={styles.banner}>
       <Text style={styles.text}>
-        Your worker account is suspended. Posting, accepting hires and sending
+        Your service provider account is suspended. Posting, accepting hires and sending
         messages are disabled until an admin reactivates it.
       </Text>
     </Banner>

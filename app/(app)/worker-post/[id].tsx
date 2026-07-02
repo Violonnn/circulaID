@@ -181,7 +181,7 @@ export default function WorkerPostDetail() {
                   <Text variant="titleMedium" numberOfLines={1} style={styles.aboutName}>
                     {workerProfile.full_name
                       ? toTitleCase(workerProfile.full_name)
-                      : post.worker_name ?? 'Worker'}
+                      : post.worker_name ?? 'Service Provider'}
                   </Text>
                 </View>
               </View>

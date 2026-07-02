@@ -65,7 +65,7 @@ export default function ClientSkillCard({
           />
           <View style={styles.headerText}>
             <Text variant="titleSmall" numberOfLines={1} style={styles.name}>
-              {post.worker_name ?? 'Worker'}
+              {post.worker_name ?? 'Service Provider'}
             </Text>
             <View style={styles.reviewRow}>
               {/* 0 reviews -> 5 outline stars so we never imply a fake rating. */}

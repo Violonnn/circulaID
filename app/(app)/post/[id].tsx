@@ -101,7 +101,7 @@ export default function PostDetail() {
       <ScrollView contentContainerStyle={styles.content}>
         <Card style={styles.card}>
           <Card.Title
-            title={post.worker_name ?? 'Worker'}
+            title={post.worker_name ?? 'Service Provider'}
             subtitle={post.worker_bio ?? 'No bio yet'}
           />
           <Card.Content>

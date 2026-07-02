@@ -116,7 +116,7 @@ export default function ClientHires() {
           ) : null
         }
         renderItem={({ item }) => {
-          const workerName = item.worker_name ? toTitleCase(item.worker_name) : 'Worker';
+          const workerName = item.worker_name ? toTitleCase(item.worker_name) : 'Service Provider';
           const meta: HireMeta[] = [
             { icon: 'calendar-outline', text: formatDateTime(item.scheduled_at) || 'No date set' },
             { icon: 'location-outline', text: item.client_location ?? 'No location given' },
@@ -147,7 +147,7 @@ export default function ClientHires() {
     if (hire.status === HIRE_STATUS.PENDING) {
       return (
         <Text variant="bodySmall" style={styles.waiting}>
-          Waiting for the worker to respond…
+          Waiting for the service provider to respond…
         </Text>
       );
     }

@@ -277,21 +277,26 @@ export default function ChatThread() {
   );
 }
 
-// System notes are author-agnostic in the database (e.g. "Worker proposed ₱500
+// System notes are author-agnostic in the database (e.g. "Service Provider proposed ₱500
 // for this job."). When the viewer IS the author of a price proposal, show it in
 // the first person ("You proposed …") instead. Display-only: uses the sender_id
-// already on the message and the currentUserId already in scope.
+// already on the message and the currentUserId already in scope. Legacy rows may
+// still say "Worker …"; normalize those at display time.
 function systemMessageText(
   content: string,
   senderId: string,
   currentUserId: string | null
 ): string {
-  // Guard: without a known viewer we can't personalize — show the original.
-  if (!currentUserId) return content;
-  if (senderId === currentUserId && content.startsWith('Worker proposed ')) {
-    return `You${content.slice('Worker'.length)}`;
+  const normalized = content
+    .replace(/^Worker proposed /, 'Service Provider proposed ')
+    .replace(/^Worker marked /, 'Service Provider marked ');
+
+  // Guard: without a known viewer we can't personalize — show the normalized text.
+  if (!currentUserId) return normalized;
+  if (senderId === currentUserId && normalized.startsWith('Service Provider proposed ')) {
+    return `You${normalized.slice('Service Provider'.length)}`;
   }
-  return content;
+  return normalized;
 }
 
 // Local, lib-free time formatter (e.g. "3:07 PM"). Falls back to empty on a bad

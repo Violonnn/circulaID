@@ -25,7 +25,7 @@ export default function NewPost() {
 
     // Guard: only an active worker may post (UX check; RLS enforces the truth).
     if (!hasActiveWorkerProfile || isWorkerSuspended) {
-      return setError('Only an active worker account can create posts.');
+      return setError('Only an active service provider account can create posts.');
     }
     // Guard: caption is required.
     if (!caption.trim()) {
@@ -56,7 +56,7 @@ export default function NewPost() {
       <Stack.Screen options={{ title: 'New Post' }} />
       <ScrollView contentContainerStyle={styles.content}>
         <Text variant="bodyMedium" style={styles.note}>
-          Set the slots and price clients will see for this post.
+          Set the slots and price employers will see for this post.
         </Text>
 
         <TextInput

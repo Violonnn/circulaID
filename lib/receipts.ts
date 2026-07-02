@@ -51,20 +51,20 @@ export async function getReceiptForHire(hireRequestId: string): Promise<ReceiptV
   // the client reads the worker via the public_profiles view.
   const me = auth.user.id;
   const ownName = await getOwnName(me);
-  let workerName = 'Worker';
+  let workerName = 'Service Provider';
   let clientName = 'Client';
 
   if (row.worker_id === me) {
-    workerName = ownName ?? 'Worker';
+    workerName = ownName ?? 'Service Provider';
     const info = await clientNamesForWorker([row.client_id]);
     const full = info.get(row.client_id)?.full_name;
     clientName = full ? toTitleCase(full) : 'Client';
   } else if (row.client_id === me) {
     clientName = ownName ?? 'Client';
-    workerName = (await getWorkerName(row.worker_id)) ?? 'Worker';
+    workerName = (await getWorkerName(row.worker_id)) ?? 'Service Provider';
   } else {
     // Admin/other viewer: only the public worker name is available.
-    workerName = (await getWorkerName(row.worker_id)) ?? 'Worker';
+    workerName = (await getWorkerName(row.worker_id)) ?? 'Service Provider';
   }
 
   return {

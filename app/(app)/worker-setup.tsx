@@ -76,7 +76,7 @@ export default function WorkerSetup() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <Stack.Screen options={{ title: 'Worker Setup' }} />
+      <Stack.Screen options={{ title: 'Service Provider Setup' }} />
       <KeyboardAvoider style={styles.flex}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text variant="bodyMedium" style={styles.note}>

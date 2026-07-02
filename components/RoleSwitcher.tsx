@@ -37,7 +37,7 @@ export default function RoleSwitcher({ onRequestChange }: Props) {
         density="small"
         buttons={[
           { value: ACTIVE_ROLE.CLIENT, label: 'Client', icon: 'account' },
-          { value: ACTIVE_ROLE.WORKER, label: 'Worker', icon: 'briefcase' },
+          { value: ACTIVE_ROLE.WORKER, label: 'Service Provider', icon: 'briefcase' },
         ]}
       />
     </View>

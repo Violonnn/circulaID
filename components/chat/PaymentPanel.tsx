@@ -302,7 +302,7 @@ export default function PaymentPanel({ threadId, onReleased }: Props) {
 
     if (isClient) {
       if (status === HIRE_STATUS.ACCEPTED && finalAmount == null) {
-        return <Info text="Waiting for the worker to send a final price." />;
+        return <Info text="Waiting for the service provider to send a final price." />;
       }
       // PART 2 (client side): Pay Now button + scan-the-QR — both call payForHire.
       if (awaitingPayment) {
@@ -332,7 +332,7 @@ export default function PaymentPanel({ threadId, onReleased }: Props) {
       if (status === HIRE_STATUS.IN_PROGRESS && !workDone) {
         return (
           <Info
-            text={`Payment${heldAmount !== null ? ` of ${formatPeso(heldAmount)}` : ''} is held in escrow. Waiting for the worker to finish.`}
+            text={`Payment${heldAmount !== null ? ` of ${formatPeso(heldAmount)}` : ''} is held in escrow. Waiting for the service provider to finish.`}
           />
         );
       }

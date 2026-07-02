@@ -124,7 +124,7 @@ export async function getChatThreads(
     const counterparty = rawName
       ? toTitleCase(rawName)
       : weAreClient
-        ? 'Worker'
+        ? 'Service Provider'
         : `Client #${hire.client_id.slice(0, 8)}`;
     return {
       id: row.id,
